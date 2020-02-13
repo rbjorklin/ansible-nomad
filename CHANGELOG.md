@@ -1,3 +1,7 @@
+## 2.0.0
+
+- Breaking change: serialize configuration as json without template
+
 ## 1.9.5
 
 - Nomad v0.10.3
