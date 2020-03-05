@@ -1,5 +1,5 @@
 ---
-# File: main.yml - Main tasks for Nomad
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 
 - name: Merge default and custom config
   set_fact:

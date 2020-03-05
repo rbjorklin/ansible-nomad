@@ -1,5 +1,5 @@
 ---
-# File: vars/RedHat.yml - Red Hat OS variables for Nomad
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 
 nomad_os_packages:
   - curl

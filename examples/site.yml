@@ -1,5 +1,5 @@
 ---
-# File: site.yml - Example nomad site playbook
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 
 - name: Installing Nomad
   hosts: nomad_instances

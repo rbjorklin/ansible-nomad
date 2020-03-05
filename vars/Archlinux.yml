@@ -1,5 +1,5 @@
 ---
-# File: Archlinux.yml - Archlinux variables for Nomad
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 
 nomad_os_packages:
   - unzip

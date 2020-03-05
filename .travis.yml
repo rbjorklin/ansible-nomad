@@ -1,4 +1,6 @@
 ---
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
+
 language: python
 python: "2.7"
 

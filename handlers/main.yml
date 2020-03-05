@@ -1,5 +1,5 @@
 ---
-# File: main.yml handlers file for nomad
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 
 - name: restart nomad
   service: name=nomad state=restarted

@@ -1,3 +1,5 @@
+---
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
 # Pure internal helper variables
 
 _nomad_node_client: "{{ (nomad_node_role == 'client') or (nomad_node_role == 'both') }}"
