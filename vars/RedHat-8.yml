@@ -1,0 +1,8 @@
+---
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
+
+nomad_os_packages:
+  - curl
+  - git
+  - python3-libselinux
+  - unzip

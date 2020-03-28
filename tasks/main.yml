@@ -9,7 +9,7 @@
   include: asserts.yml
 
 - name: Include OS variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
 
 # Gathers facts (bind address) from servers not currently targeted.
 # 'delegate_facts' is currently rather buggy in Ansible so this might not
@@ -49,7 +49,7 @@
     owner: "{{ nomad_user }}"
     group: "{{ nomad_group }}"
   with_items:
-    - "{{ nomad_config.data_dir }}"
+    - "{{ nomad_config_merged.data_dir }}"
 
 - name: Create config directory
   file:
