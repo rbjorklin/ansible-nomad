@@ -18,6 +18,12 @@ nomad_pkg: "nomad_{{ nomad_version }}_linux_{{nomad_architecture}}.zip"
 nomad_zip_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_{{nomad_architecture}}.zip"
 nomad_checksum_file_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version}}_SHA256SUMS"
 
+## CNI
+nomad_cni_version: "v0.8.5"
+nomad_cni_pkg: "cni-plugins-linux-{{ nomad_architecture }}-{{ nomad_cni_version }}.tgz"
+nomad_cni_url: "https://github.com/containernetworking/plugins/releases/download/{{ nomad_cni_version }}/{{ nomad_cni_pkg }}"
+nomad_cni_bin_dir: "/opt/cni/bin"
+
 ### Paths
 nomad_bin_dir: "/usr/local/bin"
 nomad_config_dir: "/etc/nomad.d"
@@ -60,7 +66,8 @@ nomad_config_defaults:
   name: "{{ inventory_hostname_short }}"
   datacenter: "dc1"
   region: "global"
-  bind_addr: "{{ hostvars[inventory_hostname]['ansible_'+ nomad_iface ]['ipv4']['address'] }}"
+  #bind_addr: "{{ hostvars[inventory_hostname]['ansible_'+ nomad_iface ]['ipv4']['address'] }}"
+  bind_addr: "0.0.0.0"
   data_dir: "/var/nomad"
   log_level: "INFO"
   enable_syslog: true
@@ -96,6 +103,7 @@ nomad_config_defaults:
   #### Client settings
   client:
     enabled: "{{ _nomad_node_client | bool }}"
+    network_interface: "{{ ansible_default_ipv4['alias'] }}"
     node_class: ""
     no_host_uuid: false
     max_kill_timeout: "30s"
@@ -119,7 +127,7 @@ nomad_config_defaults:
 
   #### Consul
   consul:
-    address: "localhost:8500"
+    address: "127.0.0.1:8500"
     token: ""
     server_service_name: "nomad-servers"
     client_service_name: "nomad-clients"

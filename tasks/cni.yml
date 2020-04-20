@@ -1,0 +1,95 @@
+---
+# vim: set softtabstop=2 tabstop=2 shiftwidth=2 expandtab autoindent smartindent syntax=yaml:
+
+- name: Load kernel module br_netfilter
+  command: modprobe br_netfilter
+
+- name: Ensure br_netfilter is loaded on startup
+  copy:
+    dest: /etc/modules-load.d/br_netfilter.conf
+    content: |
+      # This module is required for using CNI with Consul Connect and Nomad
+      br_netfilter
+
+- name: Check CNI package checksum file
+  stat:
+    path: "{{ role_path }}/files/cni{{ nomad_cni_version }}_SHA256SUMS"
+  become: false
+  run_once: true
+  tags: installation
+  register: nomad_cni_checksum
+  delegate_to: 127.0.0.1
+
+- name: Get CNI package checksum file
+  get_url:
+    url: "{{ nomad_cni_url }}.sha256"
+    dest: "{{ role_path }}/files/cni_{{ nomad_cni_version }}_SHA256SUMS"
+  become: false
+  run_once: true
+  tags: installation
+  when: not nomad_cni_checksum.stat.exists
+  delegate_to: 127.0.0.1
+
+- name: Get CNI package checksum
+  shell: |
+    set -o pipefail
+    grep "{{ nomad_cni_pkg }}" "{{ role_path }}/files/cni_{{ nomad_cni_version }}_SHA256SUMS"  | awk '{print $1}'
+  args:
+    executable: /bin/bash
+  become: false
+  register: nomad_cni_sha256
+  tags: installation
+  delegate_to: 127.0.0.1
+
+- name: Check CNI package file
+  stat:
+    path: "{{ role_path }}/files/{{ nomad_cni_pkg }}"
+  become: false
+  register: nomad_cni_package
+  delegate_to: 127.0.0.1
+
+- name: Download CNI
+  get_url:
+    url: "{{ nomad_cni_url }}"
+    dest: "{{ role_path }}/files/{{ nomad_cni_pkg }}"
+    checksum: "sha256:{{ nomad_cni_sha256.stdout }}"
+    timeout: "42"
+  become: false
+  tags: installation
+  delegate_to: 127.0.0.1
+  when: not nomad_cni_package.stat.exists
+
+- name: Create Temporary Directory for Extraction
+  tempfile:
+    state: directory
+    prefix: ansible-nomad-cni.
+  become: false
+  register: install_temp
+  tags: installation
+  delegate_to: 127.0.0.1
+
+- name: Unarchive CNI
+  unarchive:
+    src: "{{ role_path }}/files/{{ nomad_cni_pkg }}"
+    dest: "{{ install_temp.path }}/"
+    creates: "{{ install_temp.path }}/bridge"
+  become: false
+  tags: installation
+  delegate_to: 127.0.0.1
+
+- name: Install CNI
+  copy:
+    src: "{{ install_temp.path }}/"
+    dest: "{{ nomad_cni_bin_dir }}/"
+    owner: "root"
+    group: "root"
+    mode: 0755
+  tags: installation
+
+- name: Cleanup
+  file:
+    path: "{{ install_temp.path }}"
+    state: "absent"
+  become: false
+  tags: installation
+  delegate_to: 127.0.0.1

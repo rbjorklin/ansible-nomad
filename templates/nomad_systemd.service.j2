@@ -28,6 +28,9 @@ Restart=on-failure
 RestartSec=42s
 StartLimitBurst=3
 StartLimitIntervalSec=10
+{% for var in nomad_env_vars %}
+Environment={{ var }}
+{% endfor %}
 {% if systemd_version.stdout is version('226', '>=') %}
 TasksMax=infinity
 {% endif %}

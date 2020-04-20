@@ -38,6 +38,9 @@
 - name: Install OS packages
   include: install.yml
 
+- name: Install CNI
+  include: cni.yml
+
 - name: Disable SELinux (RHEL)
   include: selinux.yml
   when: ansible_os_family == "RedHat"
